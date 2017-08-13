@@ -98,7 +98,7 @@ tran_nan_to_mean(test_df["Fare"])
 # print lin_clf.score(train_df[["Sex","Pclass","Age","SibSp","Parch","Fare"]], train_df["Survived"])
 
 
-train_tr = train_df.sample(850)
+train_tr = train_df.sample(860)
 train_val = train_df.loc[~train_df.index.isin(train_tr.index)]
 
 # RandomForestClassifier
@@ -111,17 +111,29 @@ train_val = train_df.loc[~train_df.index.isin(train_tr.index)]
 # 		print rdf.score(train_df[["Sex","Pclass","Age","SibSp","Parch","Fare"]], train_df["Survived"])
 
 # # RandomForestClassifier
-# for trees in range(50,100,5):
-# 	for layers in range(2,20,2):
+# for trees in range(50,350,50):
+# 	for layers in range(5,30,5):
 # 		rdf = ensemble.RandomForestClassifier(n_estimators=trees,max_depth=layers)
 # 		rdf.fit(train_tr[["Sex","Pclass","Age","SibSp","Parch","Fare"]], train_tr["Survived"])
 # 		# predict=rdf.predict(test_df[["Sex","Pclass","Age","SibSp","Parch","Fare"]])
 # 		print "trees:", trees , " ;layers:", layers , rdf.score(train_val[["Sex","Pclass","Age","SibSp","Parch","Fare"]], train_val["Survived"])
 
+# # RandomForestClassifier
+# for trees in range(50,350,50):
+# 	for layers in range(4,15,2):
+# 		rdf = ensemble.RandomForestClassifier(n_estimators=trees,max_depth=layers)
+# 		rdf.fit(train_tr[["PassengerId","Sex","Pclass","Age","SibSp","Parch","Fare"]], train_tr["Survived"])
+# 		# predict=rdf.predict(test_df[["Sex","Pclass","Age","SibSp","Parch","Fare"]])
+# 		print "trees:", trees , " ;layers:", layers , "train:", rdf.score(train_tr[["PassengerId","Sex","Pclass","Age","SibSp","Parch","Fare"]], train_tr["Survived"]) , "validation:", rdf.score(train_val[["PassengerId","Sex","Pclass","Age","SibSp","Parch","Fare"]], train_val["Survived"])
 
-rdf = ensemble.RandomForestClassifier(n_estimators=60,max_depth=4)
-rdf.fit(train_df[["Sex","Pclass","Age","SibSp","Parch","Fare"]], train_df["Survived"])
-predict=rdf.predict(test_df[["Sex","Pclass","Age","SibSp","Parch","Fare"]])
+
+# rdf = ensemble.RandomForestClassifier(n_estimators=60,max_depth=4)
+# rdf.fit(train_df[["Sex","Pclass","Age","SibSp","Parch","Fare"]], train_df["Survived"])
+# predict=rdf.predict(test_df[["Sex","Pclass","Age","SibSp","Parch","Fare"]])
+
+rdf = ensemble.RandomForestClassifier(n_estimators=150,max_depth=6)
+rdf.fit(train_df[["PassengerId","Sex","Pclass","Age","SibSp","Parch","Fare"]], train_df["Survived"])
+predict=rdf.predict(test_df[["PassengerId","Sex","Pclass","Age","SibSp","Parch","Fare"]])
 
 # print "PassengerId"+","+"Survived"
 # for k in range(892,1310):

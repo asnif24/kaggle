@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Sat May 27 22:27:26 CST 2017:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-015c-4a4e-06dc-000014485318 
+on database directory /media/asnif/161AC8611AC83F8B/data/kaggle/titanic/metastore_db with class loader org.apache.spark.sql.hive.client.IsolatedClientLoader$$anon$1@64f4f12 
+Loaded from file:/usr/local/spark/jars/derby-10.12.1.1.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_121-b13
+user.dir=/media/asnif/161AC8611AC83F8B/data/kaggle/titanic
+os.name=Linux
+os.arch=amd64
+os.version=4.4.0-66-generic
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
