@@ -76,7 +76,12 @@ test_df["Cabin_G"]=test_df["Cabin_pre"].apply(lambda x : 1 if x=="G" else 0)
 test_df["Cabin_T"]=test_df["Cabin_pre"].apply(lambda x : 1 if x=="T" else 0)
 
 #NaN to mean
-tran_nan_to_mean(train_df["Age"])
+# tran_nan_to_mean(train_df["Age"])
+
+#deal with age nan
+train_df["Age_0"]=train_df["Age"].fillna(value=0)
+train_df["Age_nan"]=train_df["Age_0"].apply(lambda x : 1 if x==0 else 0)
+
 tran_nan_to_mean(test_df["Age"])
 tran_nan_to_mean(test_df["Fare"])
 
@@ -157,14 +162,25 @@ train_val = train_df.loc[~train_df.index.isin(train_tr.index)]
 # 		# predict=rdf.predict(test_df[["Sex","Pclass","Age","SibSp","Parch","Fare"]])
 # 		print "trees:", trees , " ;layers:", layers , "train:", rdf.score(train_tr[["PassengerId","Sex","Pclass","Age","SibSp","Parch","Fare"]], train_tr["Survived"]) , "validation:", rdf.score(train_val[["PassengerId","Sex","Pclass","Age","SibSp","Parch","Fare"]], train_val["Survived"])
 
+# # RandomForestClassifier
+# for trees in range(50,200,20):
+# 	for layers in range(4,30,4):
+# 		rdf = ensemble.RandomForestClassifier(n_estimators=trees,max_depth=layers,criterion='gini')
+# 		rdf.fit(train_tr[["Sex","Pclass","Age","SibSp","Parch","Fare","Embarked_S","Embarked_C","Cabin_A","Cabin_B","Cabin_C","Cabin_D","Cabin_E","Cabin_F","Cabin_G","Cabin_T"]], train_tr["Survived"])
+# 		rdf.fit(train_tr[["Sex","Pclass","Age","SibSp","Parch","Fare","Embarked_S","Embarked_C","Cabin_A","Cabin_B","Cabin_C","Cabin_D","Cabin_E","Cabin_F","Cabin_G","Cabin_T"]], train_tr["Survived"])
+# 		# predict=rdf.predict(test_df[["Sex","Pclass","Age","SibSp","Parch","Fare"]])
+# 		print "trees:", trees , " ;layers:", layers , "train:", rdf.score(train_tr[["Sex","Pclass","Age","SibSp","Parch","Fare","Embarked_S","Embarked_C","Cabin_A","Cabin_B","Cabin_C","Cabin_D","Cabin_E","Cabin_F","Cabin_G","Cabin_T"]], train_tr["Survived"]) , "validation:", rdf.score(train_val[["Sex","Pclass","Age","SibSp","Parch","Fare","Embarked_S","Embarked_C","Cabin_A","Cabin_B","Cabin_C","Cabin_D","Cabin_E","Cabin_F","Cabin_G","Cabin_T"]], train_val["Survived"])
+# 		# print "trees:", trees , " ;layers:", layers , "train:", cross_val_score(rdf,train_df[["Sex","Pclass","Age","SibSp","Parch","Fare","Embarked_S","Embarked_C","Embarked_Q","Embarked_Q","Cabin_A","Cabin_B","Cabin_C","Cabin_D","Cabin_E","Cabin_F","Cabin_G","Cabin_T"]], train_df["Survived"])
+
 # RandomForestClassifier
 for trees in range(50,200,20):
 	for layers in range(4,30,4):
-		rdf = ensemble.RandomForestClassifier(n_estimators=trees,max_depth=layers)
-		# rdf.fit(train_tr[["Sex","Pclass","Age","SibSp","Parch","Fare","Embarked_S","Embarked_C","Embarked_Q","Embarked_Q","Cabin_A","Cabin_B","Cabin_C","Cabin_D","Cabin_E","Cabin_F","Cabin_G","Cabin_T"]], train_tr["Survived"])
+		rdf = ensemble.RandomForestClassifier(n_estimators=trees,max_depth=layers,criterion='gini')
+		rdf.fit(train_tr[["Sex","Pclass","Age_0","Age_nan","SibSp","Parch","Fare","Embarked_S","Embarked_C","Cabin_A","Cabin_B","Cabin_C","Cabin_D","Cabin_E","Cabin_F","Cabin_G","Cabin_T"]], train_tr["Survived"])
 		# predict=rdf.predict(test_df[["Sex","Pclass","Age","SibSp","Parch","Fare"]])
-		# print "trees:", trees , " ;layers:", layers , "train:", rdf.score(train_tr[["Sex","Pclass","Age","SibSp","Parch","Fare","Embarked_S","Embarked_C","Embarked_Q","Embarked_Q","Cabin_A","Cabin_B","Cabin_C","Cabin_D","Cabin_E","Cabin_F","Cabin_G","Cabin_T"]], train_tr["Survived"]) , "validation:", rdf.score(train_val[["Sex","Pclass","Age","SibSp","Parch","Fare","Embarked_S","Embarked_C","Embarked_Q","Embarked_Q","Cabin_A","Cabin_B","Cabin_C","Cabin_D","Cabin_E","Cabin_F","Cabin_G","Cabin_T"]], train_val["Survived"])
-		print "trees:", trees , " ;layers:", layers , "train:", cross_val_score(rdf,train_df[["Sex","Pclass","Age","SibSp","Parch","Fare","Embarked_S","Embarked_C","Embarked_Q","Embarked_Q","Cabin_A","Cabin_B","Cabin_C","Cabin_D","Cabin_E","Cabin_F","Cabin_G","Cabin_T"]], train_df["Survived"])
+		print "trees:", trees , " ;layers:", layers , "train:", rdf.score(train_tr[["Sex","Pclass","Age_0","Age_nan","SibSp","Parch","Fare","Embarked_S","Embarked_C","Cabin_A","Cabin_B","Cabin_C","Cabin_D","Cabin_E","Cabin_F","Cabin_G","Cabin_T"]], train_tr["Survived"]) , "validation:", rdf.score(train_val[["Sex","Pclass","Age_0","Age_nan","SibSp","Parch","Fare","Embarked_S","Embarked_C","Cabin_A","Cabin_B","Cabin_C","Cabin_D","Cabin_E","Cabin_F","Cabin_G","Cabin_T"]], train_val["Survived"])
+		# print "trees:", trees , " ;layers:", layers , "train:", cross_val_score(rdf,train_df[["Sex","Pclass","Age","SibSp","Parch","Fare","Embarked_S","Embarked_C","Embarked_Q","Embarked_Q","Cabin_A","Cabin_B","Cabin_C","Cabin_D","Cabin_E","Cabin_F","Cabin_G","Cabin_T"]], train_df["Survived"])
+
 
 # rdf = ensemble.RandomForestClassifier(n_estimators=60,max_depth=4)
 # rdf.fit(train_df[["Sex","Pclass","Age","SibSp","Parch","Fare"]], train_df["Survived"])
@@ -177,6 +193,10 @@ for trees in range(50,200,20):
 # rdf = ensemble.RandomForestClassifier(n_estimators=200,max_depth=8)
 # rdf.fit(train_df[["Sex","Pclass","Age","SibSp","Parch","Fare","Embarked_S","Embarked_C","Embarked_Q","Cabin_A","Cabin_B","Cabin_C","Cabin_D","Cabin_E","Cabin_F","Cabin_G","Cabin_T"]], train_df["Survived"])
 # predict=rdf.predict(test_df[["Sex","Pclass","Age","SibSp","Parch","Fare","Embarked_S","Embarked_C","Embarked_Q","Cabin_A","Cabin_B","Cabin_C","Cabin_D","Cabin_E","Cabin_F","Cabin_G","Cabin_T"]])
+
+# rdf = ensemble.RandomForestClassifier(n_estimators=120,max_depth=20,criterion='gini')
+# rdf.fit(train_df[["Sex","Pclass","Age","SibSp","Parch","Fare","Embarked_S","Embarked_C","Cabin_A","Cabin_B","Cabin_C","Cabin_D","Cabin_E","Cabin_F","Cabin_G","Cabin_T"]], train_df["Survived"])
+# predict=rdf.predict(test_df[["Sex","Pclass","Age","SibSp","Parch","Fare","Embarked_S","Embarked_C","Cabin_A","Cabin_B","Cabin_C","Cabin_D","Cabin_E","Cabin_F","Cabin_G","Cabin_T"]])
 
 # print "PassengerId"+","+"Survived"
 # for k in range(892,1310):
