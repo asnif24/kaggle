@@ -95,6 +95,7 @@ class CNN(Convolution, VariableDefiner):
             "layer1" : Layer(4*4*72, 128),
             "layer2" : Layer(128, 10)
         }
+        self.keep_prob = tf.placeholder(tf.float32)
     def output(self, x):
         x_origin = tf.reshape(x, [-1,28,28,1])
         h_conv1 = tf.nn.relu(tf.add(self.conv2d(x_origin, self.conv_var_W["conv1"], 1), self.conv_var_b["conv1"]))     
@@ -114,7 +115,8 @@ class CNN(Convolution, VariableDefiner):
 
         h_conv6_reshape = tf.reshape(h_max_pool3, [-1,4*4*72])
         h_layer1 = self.layer_var["layer1"].output(h_conv6_reshape, tf.nn.sigmoid)
-        h_layer2 = self.layer_var["layer2"].output(h_layer1, tf.nn.softmax)
+        h_drop = tf.nn.dropout(h_layer1, self.keep_prob)
+        h_layer2 = self.layer_var["layer2"].output(h_drop, tf.nn.softmax)
         return h_layer2
 
 class Trainer(object):
@@ -133,7 +135,7 @@ class Trainer(object):
         self.cnn = CNN()
 
         self.loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=self.x_label, logits=self.cnn.output(self.x_data)))
-        self.train_step = tf.train.AdamOptimizer(0.0005).minimize(self.loss)
+        self.train_step = tf.train.AdamOptimizer(0.0001).minimize(self.loss)
 
         self.correct_prediction = tf.equal(tf.argmax(self.x_label, 1), tf.argmax(self.cnn.output(self.x_data), 1))
         self.accuracy = tf.reduce_mean(tf.cast(self.correct_prediction, tf.float32))
@@ -142,7 +144,7 @@ class Trainer(object):
 
     def showStatus(self):
         randomBatch = self.randomBatch(10000)
-        loss, accuracy = self.sess.run([self.loss, self.accuracy], feed_dict={self.x_data: self.train_data[randomBatch], self.x_label: self.train_label[randomBatch]})
+        loss, accuracy = self.sess.run([self.loss, self.accuracy], feed_dict={self.x_data: self.train_data[randomBatch], self.x_label: self.train_label[randomBatch], self.cnn.keep_prob: 1.0})
         print "step: "+str(self.step)+", loss:"+str(loss)+", accuracy:"+str(accuracy)
 
     def printParameters(self):
@@ -168,17 +170,17 @@ class Trainer(object):
         self.sess.run(init)
         for self.step in range(training_steps):
             randomBatch = self.randomBatch(self.batch_size)
-            self.sess.run(self.train_step, feed_dict={self.x_data: self.train_data[randomBatch], self.x_label: self.train_label[randomBatch]})
+            self.sess.run(self.train_step, feed_dict={self.x_data: self.train_data[randomBatch], self.x_label: self.train_label[randomBatch], self.cnn.keep_prob: 0.6})
             if self.step%500 == 0:
                 self.showStatus()
 
     def test(self):
-        predict = self.sess.run(tf.argmax(self.cnn.output(self.x_data), 1), feed_dict={self.x_data: self.test_data})
+        predict = self.sess.run(tf.argmax(self.cnn.output(self.x_data), 1), feed_dict={self.x_data: self.test_data, self.cnn.keep_prob: 1.0})
         self.outputCsv(predict)
 
 
 if __name__ == '__main__':
     trainer = Trainer()
-    trainer.train(10001)
+    trainer.train(50001)
     trainer.test()
 
